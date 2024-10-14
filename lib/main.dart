@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'videoPlayer.dart';
 
 void main() {
   runApp(
@@ -137,9 +138,18 @@ class HomePageState extends State<HomePage> {
                           child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
-                                makeVideo('assets/images/ryan-2.jpg'),
-                                makeVideo('assets/images/ryan-3.jpg'),
-                                makeVideo('assets/images/ryan-4.jpg'),
+                                makeVideo(
+                                    imagePath: 'assets/images/ryan-2.jpg',
+                                    movieName: 'The Nice Guys (2016)',
+                                    duration: '1h 56m'),
+                                makeVideo(
+                                    imagePath: 'assets/images/ryan-3.jpg',
+                                    movieName: 'Drive (2011)',
+                                    duration: '1h 40m'),
+                                makeVideo(
+                                    imagePath: 'assets/images/ryan-4.jpg',
+                                    movieName: 'Blade Runner (2017)',
+                                    duration: '2h 43m'),
                               ]),
                         ),
                         const SizedBox(
@@ -160,15 +170,21 @@ class HomePageState extends State<HomePage> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
-                      color: Colors.yellow[700],
+                      gradient: const LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        colors: [ 
+                        Colors.yellow,
+                        Colors.orange,
+                      ])
                     ),
                     child: MaterialButton(
-                      onPressed: () async{
-                        Uri url=Uri.parse('https://youtube.com/shorts/LyAFwiY2DQk?si=Oqz6ez5BSbLGmeeQ');
-                        if(await canLaunchUrl(url)){
-                          await launchUrl(url,mode: LaunchMode.externalApplication);
-                        }
-                        else{
+                      onPressed: () async {
+                        Uri url = Uri.parse(
+                            'https://youtube.com/shorts/LyAFwiY2DQk?si=Oqz6ez5BSbLGmeeQ');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        } else {
                           throw 'could not open $url';
                         }
                       },
@@ -185,12 +201,14 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-Widget makeVideo(String imagePath) {
-  return AspectRatio(
-    aspectRatio: 1.5 / 1,
-    child: Container(
+  Widget makeVideo(
+      {required String imagePath,
+      required String movieName,
+      required String duration}) {
+    return AspectRatio(
+      aspectRatio: 1.5 / 1,
+      child: Container(
         margin: const EdgeInsets.only(right: 15.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -199,19 +217,69 @@ Widget makeVideo(String imagePath) {
             fit: BoxFit.cover,
           ),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
-            Colors.black.withOpacity(0.9),
-            Colors.black.withOpacity(0.3),
-          ])),
-          child: const Align(
-            child: Icon(
-              Icons.play_arrow,
-              color: Colors.white,
-              size: 70,
+        child: Stack(
+          children: [
+            // Gradient Overlay
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomRight,
+                  colors: [
+                    Colors.black.withOpacity(0.9),
+                    Colors.black.withOpacity(0.3),
+                  ],
+                ),
+              ),
             ),
-          ),
-        )),
-  );
+            // Play Icon Centered
+            Center(
+              child: IconButton(
+                icon: const Icon(
+                  Icons.play_arrow,
+                  size: 50.0, // Adjust size as needed
+                  color:
+                      Colors.white, // Optional: set color for better contrast
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoPlayer(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            // Movie Title and Duration at Bottom Left
+            Positioned(
+              bottom: 10, // Adjust positioning as needed
+              left: 10,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    movieName,
+                    style: const TextStyle(
+                      color:
+                          Colors.white, // Ensure text is visible on background
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  Text(
+                    '$duration  |  Click to see Trailer',
+                    style: const TextStyle(
+                      color: Colors.white70, // Lighter text for subtitle
+                      fontSize: 14.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
