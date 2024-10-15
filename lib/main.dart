@@ -29,7 +29,7 @@ class HomePageState extends State<HomePage> {
                   background: Container(
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/ryan-1.jpg'),
+                        image: AssetImage('assets/images/ryan.jpg'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -39,7 +39,7 @@ class HomePageState extends State<HomePage> {
                           begin: Alignment.bottomRight,
                           colors: [
                             Colors.black,
-                            Colors.black.withOpacity(0.3),
+                            Colors.black.withOpacity(0.1),
                           ],
                         )),
                         child: const Padding(
@@ -70,7 +70,7 @@ class HomePageState extends State<HomePage> {
                                       width: 60,
                                     ),
                                     Text(
-                                      '10.7M Followers',
+                                      '1.9M Followers',
                                       style: TextStyle(
                                           color: Colors.grey, fontSize: 20.0),
                                     ),
@@ -140,16 +140,20 @@ class HomePageState extends State<HomePage> {
                               children: [
                                 makeVideo(
                                     imagePath: 'assets/images/ryan-2.jpg',
-                                    movieName: 'The Nice Guys (2016)',
-                                    duration: '1h 56m'),
+                                    imageTitle: 'The Nice Guys (2016)',
+                                    duration: '1h 56m',
+                                    moviePath: 'assets/videos/Nice-Guys.mp4'),
                                 makeVideo(
                                     imagePath: 'assets/images/ryan-3.jpg',
-                                    movieName: 'Drive (2011)',
-                                    duration: '1h 40m'),
+                                    imageTitle: 'Drive (2011)',
+                                    duration: '1h 40m',
+                                    moviePath: 'assets/videos/Drive.mp4'),
                                 makeVideo(
                                     imagePath: 'assets/images/ryan-4.jpg',
-                                    movieName: 'Blade Runner (2017)',
-                                    duration: '2h 43m'),
+                                    imageTitle: 'Blade Runner (2017)',
+                                    duration: '2h 43m',
+                                    moviePath:
+                                        'assets/videos/Blade-Runner.mp4'),
                               ]),
                         ),
                         const SizedBox(
@@ -169,18 +173,17 @@ class HomePageState extends State<HomePage> {
                     height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40),
-                      gradient: const LinearGradient(
-                        begin: Alignment.bottomLeft,
-                        colors: [ 
-                        Colors.yellow,
-                        Colors.orange,
-                      ])
-                    ),
+                        borderRadius: BorderRadius.circular(40),
+                        gradient: const LinearGradient(
+                            begin: Alignment.bottomLeft,
+                            colors: [
+                              Colors.yellow,
+                              Colors.orange,
+                            ])),
                     child: MaterialButton(
                       onPressed: () async {
                         Uri url = Uri.parse(
-                            'https://youtube.com/shorts/LyAFwiY2DQk?si=Oqz6ez5BSbLGmeeQ');
+                            'https://x.com/RyanGosling?t=An0ZywIZqOtDmEeq-SoBoA&s=09');
                         if (await canLaunchUrl(url)) {
                           await launchUrl(url,
                               mode: LaunchMode.externalApplication);
@@ -204,8 +207,9 @@ class HomePageState extends State<HomePage> {
 
   Widget makeVideo(
       {required String imagePath,
-      required String movieName,
-      required String duration}) {
+      required String imageTitle,
+      required String duration,
+      required String moviePath}) {
     return AspectRatio(
       aspectRatio: 1.5 / 1,
       child: Container(
@@ -245,7 +249,10 @@ class HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => VideoPlayer(),
+                      builder: (context) => VideoPlayer(
+                        videoTitle: imageTitle,
+                        videoPath: moviePath,
+                      ),
                     ),
                   );
                 },
@@ -259,7 +266,7 @@ class HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    movieName,
+                    imageTitle,
                     style: const TextStyle(
                       color:
                           Colors.white, // Ensure text is visible on background
